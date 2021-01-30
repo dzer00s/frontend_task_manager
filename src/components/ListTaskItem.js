@@ -37,14 +37,13 @@ const ListTaskItem = (props) => {
           <div className={classes.paper}>{props.task.title}</div>
         </Grid>
         <Grid item xs={2}>
-          <div className={classes.paper}>{format(new Date(props.task.date_start), 'MM/dd/yy')}</div>
+          <div className={classes.paper}>{format(new Date(props.task.date_start), 'dd.MM.yyyy')}</div>
         </Grid>
         <Grid item xs={2}>
-          {/* <div className={classes.paper}>{props.task.deadline}</div> */}
           <div className={classes.paper}>
             {formatDistance(
               new Date(props.task.deadline),
-              new Date(props.task.date_start),
+              new Date(),
               { addSuffix: true, locale: ruLocale }
             )}
           </div>

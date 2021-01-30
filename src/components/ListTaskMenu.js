@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ListTaskItem from "./ListTaskItem";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -23,6 +24,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const ListTaskMenu = () => {
+  const currentUser = useSelector(state => state.user.currentUser.username)
   const [todos, setTodos] = useState([]);
   const deleteTodo = async id => {
     try {
@@ -37,9 +39,9 @@ const ListTaskMenu = () => {
   };
   const classes = useStyles();
 
-  const getTodos = async () => {
+  const getTodos = async (user) => {
     try {
-      const response = await fetch("http://localhost:5000/api/tasks");
+      const response = await fetch(`http://localhost:5000/api/tasks/${user}`);
       const jsonData = await response.json();
       setTodos(jsonData);
     } catch (err) {
@@ -47,7 +49,7 @@ const ListTaskMenu = () => {
     }
   };
   useEffect(() => {
-    getTodos();
+    getTodos(currentUser);
   }, []);
   console.log(todos)
 
