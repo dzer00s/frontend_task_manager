@@ -1,8 +1,9 @@
-import { SET_USER, LOGOUT } from "../actions/user"
+import { SET_USER, LOGOUT, GET_USERS } from "../actions/user"
 
 const defaultState = {
     currentUser: {},
-    isAuth: false
+    isAuth: false,
+    listUsers: {}
 };
 
 export default function userReducer(state = defaultState, action) {
@@ -19,6 +20,11 @@ export default function userReducer(state = defaultState, action) {
                 ...state,
                 currentUser: {},
                 isAuth: false
+            }
+        case GET_USERS:
+            return {
+                ...state,
+                listUsers: action.payload
             }
         default:
             return state

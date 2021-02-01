@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Button, makeStyles, TextField } from "@material-ui/core";
+import { Autocomplete } from "@material-ui/lab";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllUsers } from "../actions/user";
 
 const useStyles = makeStyles((theme) => ({
   ButtonMargin: {
@@ -11,6 +14,12 @@ const useStyles = makeStyles((theme) => ({
 
 const FormCreate = () => {
   const classes = useStyles();
+  const allUsers = useSelector(state => state.user.listUsers)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getAllUsers())
+  }, [])
 
   const formik = useFormik({
     initialValues: {
@@ -34,9 +43,10 @@ const FormCreate = () => {
         // .oneOf([Yup.ref("password")], "Password's not match")
         .required("Required!")
     }),
-    onSubmit: values => {
+    onSubmit: (values, { resetForm }) => {
       // alert(JSON.stringify(values, null, 2));
       sendPost(values)
+      resetForm()
     }
   });
 
@@ -49,7 +59,7 @@ const FormCreate = () => {
       body: JSON.stringify(values),
       redirect: 'follow'
     };
-    
+
     fetch("http://localhost:5000/api/task", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
@@ -66,6 +76,7 @@ const FormCreate = () => {
           id="title"
           name="title"
           label="Наименование"
+          variant="filled"
           value={formik.values.title}
           onChange={formik.handleChange}
           error={formik.touched.title && Boolean(formik.errors.title)}
@@ -98,15 +109,18 @@ const FormCreate = () => {
           error={formik.touched.deadline && Boolean(formik.errors.deadline)}
           helperText={formik.touched.deadline && formik.errors.deadline}
         />
-        <TextField
+        <Autocomplete
           fullWidth
           id="executor"
           name="executor"
           label="Исполнитель"
-          value={formik.values.executor}
-          onChange={formik.handleChange}
-          error={formik.touched.executor && Boolean(formik.errors.executor)}
-          helperText={formik.touched.executor && formik.errors.executor}
+          options={allUsers}
+          onChange={(e, value) => {
+            formik.setFieldValue("executor", value.username)
+          }}
+          getOptionLabel={(option) => option.username}
+          renderInput={(params) => <TextField {...params} label="Исполнитель" variant="filled"
+          />}
         />
         <Button className={classes.ButtonMargin} color="primary" variant="contained" fullWidth type="submit">
           Добавить

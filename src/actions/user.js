@@ -2,10 +2,12 @@ import axios from "axios";
 
 export const SET_USER = 'SET_USER';
 export const LOGOUT = 'LOGOUT';
+export const GET_USERS = 'GET_USERS';
 
 // ACTIONS
 export const logout = () => ({ type: LOGOUT })
 export const setUser = (user) => ({ type: SET_USER, payload: user })
+export const getUsers = (users) => ({ type: GET_USERS, payload: users })
 
 export const registrationUser = async (values) => {
     try {
@@ -58,6 +60,18 @@ export const authUser = () => {
         }
         catch (e) {
             // localStorage.removeItem('token')
+        }
+    }
+}
+
+export const getAllUsers = () => {
+    return async dispatch => {
+        try {
+            console.log("getUsers")
+            const response = await axios.get("http://localhost:5000/api/users")
+            dispatch(getUsers(response.data))
+        }
+        catch (e) {
         }
     }
 }
